@@ -14,13 +14,23 @@ import {
 import { Sort } from "./sort";
 import { Filter } from "./filter";
 import { Pagination } from "./pagination";
+import { FilePanel } from "./file-panel";
+import { WorkBook } from "xlsx";
 
 export const Table = ({
   columns,
   data,
+  filename,
+  email,
+  spreadsheet,
+  isUploaded,
 }: {
   columns: ColumnDef<RowType>[];
   data: RowType[];
+  filename: string;
+  email: string;
+  spreadsheet: WorkBook;
+  isUploaded: boolean;
 }) => {
   const table = useReactTable({
     columns,
@@ -84,7 +94,7 @@ export const Table = ({
             </tr>
           ))}
         </tbody>
-        <tfoot className="mb-12">
+        <tfoot className="mb-14">
           {table.getFooterGroups().map((footerGroup) => (
             <tr key={footerGroup.id}>
               {footerGroup.headers.map((header) => (
@@ -99,8 +109,14 @@ export const Table = ({
           ))}
         </tfoot>
       </table>
-      <div className="fixed bottom-0 z-20">
+      <div className="fixed bottom-0 z-20 flex flex-row items-center gap-4 pb-2 w-full justify-between">
         <Pagination table={table} />
+        <FilePanel
+          filename={filename}
+          email={email}
+          spreadsheet={spreadsheet}
+          isUploaded={isUploaded}
+        />
       </div>
     </>
   );

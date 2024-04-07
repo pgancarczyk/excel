@@ -3,7 +3,7 @@ import { Table } from "@tanstack/react-table";
 
 export const Pagination = ({ table }: { table: Table<RowType> }) => (
   <>
-    <div className="flex items-center gap-2 pl-2 pb-2">
+    <div className="flex items-center gap-2 pl-2">
       <button
         className="border rounded p-1"
         onClick={() => table.firstPage()}

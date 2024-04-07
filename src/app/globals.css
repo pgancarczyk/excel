@@ -4,6 +4,7 @@
 
 html {
   scrollbar-color: theme("colors.blue.500") transparent;
+  scrollbar-width: thin;
 }
 
 @layer utilities {
