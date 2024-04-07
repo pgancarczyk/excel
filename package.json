@@ -6,11 +6,17 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:studio": "prisma studio",
+    "db:pull": "prisma db pull",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push"
   },
   "dependencies": {
+    "@prisma/client": "5.12.1",
     "@tanstack/react-table": "^8.15.3",
     "next": "14.1.4",
+    "prisma": "^5.12.1",
     "react": "^18",
     "react-dom": "^18",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz"

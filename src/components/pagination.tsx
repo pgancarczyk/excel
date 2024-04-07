@@ -65,7 +65,7 @@ export const Pagination = ({ table }: { table: Table<RowType> }) => (
         ))}
       </select>
       showing {table.getRowModel().rows.length.toLocaleString()} of{" "}
-      {table.getRowCount().toLocaleString()} Rows
+      {table.getRowCount().toLocaleString()} rows
     </div>
   </>
 );
