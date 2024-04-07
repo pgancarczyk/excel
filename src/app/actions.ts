@@ -1,6 +1,5 @@
 "use server";
 
-import { SpreadsheetService } from "@/services/spreadsheet";
 import prisma from "./prisma";
 import { WorkBook, write } from "xlsx";
 
@@ -33,6 +32,5 @@ export const getUser = async (email: string) => {
 };
 
 export const deleteUser = async (email: string) => {
-  const user = await prisma.user.delete({ where: { email } });
-  return user;
+  await prisma.user.delete({ where: { email } });
 };

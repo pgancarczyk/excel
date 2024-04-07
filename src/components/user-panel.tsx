@@ -12,18 +12,6 @@ export const UserPanel = () => {
       >
         log out
       </button>
-      {/* <button
-        onClick={async () => {
-          const response = await upsertUser(
-            session?.user?.email as string,
-            filename,
-            spreadsheet
-          );
-          console.log(response);
-        }}
-      >
-        add
-      </button> */}
     </div>
   ) : (
     <button

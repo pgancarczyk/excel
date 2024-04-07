@@ -20,7 +20,7 @@ export const Filter = ({
       typeof firstValue === "number"
         ? []
         : Array.from(column.getFacetedUniqueValues().keys()).sort(),
-    [column.getFacetedUniqueValues()]
+    [column, firstValue]
   );
 
   return typeof firstValue === "number" ? (
@@ -89,7 +89,7 @@ const Input = ({
     }, debounce);
 
     return () => clearTimeout(timeout);
-  }, [value]);
+  }, [value, debounce, onChange]);
 
   return (
     <input

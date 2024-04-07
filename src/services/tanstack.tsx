@@ -11,7 +11,7 @@ export class TanstackService {
 
   private static renderCell = (props: CellContext<RowType, unknown>) => {
     const value = props.getValue() as RowType[keyof RowType];
-    // props.cell.get
+
     return (
       <input
         type="text"

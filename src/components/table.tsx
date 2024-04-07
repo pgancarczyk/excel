@@ -44,6 +44,7 @@ export const Table = ({
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
     initialState: { pagination: { pageSize: 50 } },
   });
+
   return (
     <>
       <table className="flex flex-col h-full overflow-y-hidden w-max">

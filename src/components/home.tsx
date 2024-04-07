@@ -1,12 +1,11 @@
 "use client";
 
-import { getUser, upsertUser } from "@/app/actions";
+import { getUser } from "@/app/actions";
 import { Loading } from "@/components/loading";
 import { Table } from "@/components/table";
 import { SpreadsheetService } from "@/services/spreadsheet";
 import { TanstackService } from "@/services/tanstack";
 import { RowType } from "@/types";
-import { User } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { useSession } from "next-auth/react";
 import { ChangeEvent, useEffect, useState } from "react";
@@ -21,6 +20,7 @@ export default function Home() {
   const [filename, setFilename] = useState<string>("");
   const [isUplaoded, setIsUplaoded] = useState<boolean>(false);
   const { data: session } = useSession();
+
   useEffect(() => {
     const email = session?.user?.email;
     if (email) {
