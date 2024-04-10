@@ -1,25 +1,46 @@
 "use client";
 
-import { getUser } from "@/app/actions";
+import { getUser } from "@/app/lib/actions";
 import { Loading } from "@/components/loading";
 import { Table } from "@/components/table";
-import { SpreadsheetService } from "@/services/spreadsheet";
-import { TanstackService } from "@/services/tanstack";
-import { RowType } from "@/types";
-import { ColumnDef } from "@tanstack/react-table";
 import { useSession } from "next-auth/react";
-import { ChangeEvent, useEffect, useState } from "react";
-import { WorkBook } from "xlsx";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { read, utils, WorkBook } from "xlsx";
 import { UserPanel } from "./user-panel";
+import {
+  getCoreRowModel,
+  getFacetedMinMaxValues,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { getColumns, getData } from "@/app/lib/tanstack";
 
 export default function Home() {
-  const [spreadsheet, setSpreadsheet] = useState<WorkBook | null>(null);
+  const [spreadsheet, setSpreadsheet] = useState<WorkBook>(utils.book_new());
   const [isLoading, setIsLoading] = useState<Boolean>(false);
-  const [columns, setColumns] = useState<ColumnDef<RowType>[]>([]);
-  const [data, setData] = useState<RowType[]>([]);
   const [filename, setFilename] = useState<string>("");
   const [isUplaoded, setIsUplaoded] = useState<boolean>(false);
+  const data = useMemo(() => getData(spreadsheet), [spreadsheet]);
+  const columns = useMemo(() => getColumns(data), [data]);
   const { data: session } = useSession();
+
+  const table = useReactTable({
+    columns,
+    data,
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getFacetedRowModel: getFacetedRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
+    getFacetedMinMaxValues: getFacetedMinMaxValues(),
+    initialState: { pagination: { pageSize: 50 } },
+    meta: { spreadsheet },
+  });
 
   useEffect(() => {
     const email = session?.user?.email;
@@ -31,15 +52,8 @@ export default function Home() {
           fetch(`/api/file/${email}`).then((response) => {
             if (response.status === 200) {
               response.arrayBuffer().then((buffer) => {
-                SpreadsheetService.parse(buffer).then(
-                  ({ spreadsheet, columns, data }) => {
-                    const columnDefs: ColumnDef<RowType>[] =
-                      TanstackService.mapColumns(columns);
-                    setSpreadsheet(spreadsheet);
-                    setColumns(columnDefs);
-                    setData(data);
-                  }
-                );
+                const spreadsheet = read(buffer);
+                setSpreadsheet(spreadsheet);
               });
             }
           });
@@ -53,14 +67,8 @@ export default function Home() {
       setIsLoading(true);
       const file = e.target.files[0];
       const buffer = await file.arrayBuffer();
-      const { spreadsheet, columns, data } = await SpreadsheetService.parse(
-        buffer
-      );
-      const columnDefs: ColumnDef<RowType>[] =
-        TanstackService.mapColumns(columns);
+      const spreadsheet = read(buffer);
       setSpreadsheet(spreadsheet);
-      setColumns(columnDefs);
-      setData(data);
       setFilename(file.name);
       setIsLoading(false);
     }
@@ -75,8 +83,17 @@ export default function Home() {
           <header className="px-4 py-3 fixed flex justify-between items-center w-full">
             <div>
               <label
-                htmlFor="upload-button"
-                className="bg-blue-500 p-2 inline-block rounded text-gray-100 w-32 text-center hover:bg-blue-400 transition-all cursor-pointer"
+                title={
+                  isUplaoded && session
+                    ? "delete the current file if you want to upload a new one"
+                    : ""
+                }
+                htmlFor={isUplaoded ? "" : "upload-button"}
+                className={`${
+                  isUplaoded && session
+                    ? "bg-gray-500"
+                    : "bg-blue-500 hover:bg-blue-400 cursor-pointer"
+                } p-2 inline-block rounded text-gray-100 w-32 text-center transition-all`}
               >
                 upload
               </label>
@@ -92,14 +109,13 @@ export default function Home() {
             <UserPanel />
           </header>
           <main className="pt-16 h-full">
-            {spreadsheet && (
+            {table && (
               <Table
+                table={table}
                 filename={filename}
-                spreadsheet={spreadsheet}
                 email={session?.user?.email || ""}
-                columns={columns}
-                data={data}
                 isUploaded={isUplaoded}
+                readSpreadsheet={setSpreadsheet}
               />
             )}
           </main>

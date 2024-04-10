@@ -1,4 +1,4 @@
-import { RowType } from "@/types";
+import { RowType } from "@/app/lib/tanstack";
 import { Column, Table } from "@tanstack/react-table";
 import { InputHTMLAttributes, useEffect, useMemo, useState } from "react";
 
@@ -19,7 +19,9 @@ export const Filter = ({
     () =>
       typeof firstValue === "number"
         ? []
-        : Array.from(column.getFacetedUniqueValues().keys()).sort(),
+        : Array.from(column.getFacetedUniqueValues().keys())
+            .filter(Boolean)
+            .sort(),
     [column, firstValue]
   );
 
@@ -89,7 +91,9 @@ const Input = ({
     }, debounce);
 
     return () => clearTimeout(timeout);
-  }, [value, debounce, onChange]);
+    // additional dependendencies are not necessary and would cause a render loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
 
   return (
     <input

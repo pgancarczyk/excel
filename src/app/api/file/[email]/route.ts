@@ -1,10 +1,14 @@
-import prisma from "@/app/prisma";
+import { authOptions } from "@/app/lib/auth";
+import prisma from "@/app/lib/prisma";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
-import { authOptions } from "../../auth/[...nextauth]/route";
 
-export async function GET(res: NextResponse, req: NextRequest) {
-  const email = (req as any).params.email as string | undefined;
+export async function GET(
+  req: NextRequest,
+  context: { params: { email: string } }
+) {
+  // const email = req.nextUrl.searchParams.get("email");
+  const email = context.params.email;
   if (!email)
     return NextResponse.json(
       { error: "email parameter missing" },

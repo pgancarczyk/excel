@@ -1,4 +1,4 @@
-import { RowType } from "@/types";
+import { RowType } from "@/app/lib/tanstack";
 import { Table } from "@tanstack/react-table";
 
 export const Pagination = ({ table }: { table: Table<RowType> }) => (

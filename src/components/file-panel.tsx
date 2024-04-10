@@ -1,36 +1,41 @@
-import { deleteUser, upsertUser } from "@/app/actions";
+import { deleteUser, upsertUser } from "@/app/lib/actions";
 import { WorkBook } from "xlsx";
 import { Button } from "./button";
+import { SpreadsheetTable } from "@/app/lib/tanstack";
+import { Dispatch, SetStateAction } from "react";
 
 export const FilePanel = ({
   email,
   filename,
-  spreadsheet,
+  table,
   isUploaded,
+  readSpreadsheet,
 }: {
   email: string;
   filename: string;
-  spreadsheet: WorkBook;
+  table: SpreadsheetTable;
   isUploaded: boolean;
+  readSpreadsheet: (spreadsheet: WorkBook) => void;
 }) => {
   const save = async () => {
-    const response = await upsertUser(email, filename, spreadsheet);
+    if (table.options.meta) {
+      const { spreadsheet } = table.options.meta;
+      await upsertUser(email, filename, spreadsheet);
+      readSpreadsheet(spreadsheet);
+    }
   };
 
   const remove = async () => {
-    const response = await deleteUser(email);
+    await deleteUser(email);
   };
 
   const filepath = `/api/file/${email}`;
 
   return email ? (
     <div className="flex flex-row items-center gap-4 pr-4">
-      <button
-        className="bg-blue-500 p-2 inline-block rounded text-gray-100 w-48 text-center hover:bg-blue-400 transition-all cursor-pointer"
-        onClick={() => save()}
-      >
+      <Button disabled={!filename} onClick={() => save()}>
         save
-      </button>
+      </Button>
       <Button
         disabled={!isUploaded}
         onClick={() => remove()}

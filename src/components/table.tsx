@@ -1,50 +1,24 @@
-import { RowType } from "@/types";
-import {
-  ColumnDef,
-  useReactTable,
-  getCoreRowModel,
-  flexRender,
-  getSortedRowModel,
-  getFilteredRowModel,
-  getFacetedRowModel,
-  getPaginationRowModel,
-  getFacetedUniqueValues,
-  getFacetedMinMaxValues,
-} from "@tanstack/react-table";
+import { flexRender } from "@tanstack/react-table";
 import { Sort } from "./sort";
 import { Filter } from "./filter";
 import { Pagination } from "./pagination";
 import { FilePanel } from "./file-panel";
 import { WorkBook } from "xlsx";
+import { SpreadsheetTable } from "@/app/lib/tanstack";
 
 export const Table = ({
-  columns,
-  data,
+  table,
   filename,
   email,
-  spreadsheet,
   isUploaded,
+  readSpreadsheet,
 }: {
-  columns: ColumnDef<RowType>[];
-  data: RowType[];
+  table: SpreadsheetTable;
   filename: string;
   email: string;
-  spreadsheet: WorkBook;
   isUploaded: boolean;
+  readSpreadsheet: (spreadsheet: WorkBook) => void;
 }) => {
-  const table = useReactTable({
-    columns,
-    data,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
-    getFacetedMinMaxValues: getFacetedMinMaxValues(),
-    initialState: { pagination: { pageSize: 50 } },
-  });
-
   return (
     <>
       <table className="flex flex-col h-full overflow-y-hidden w-max">
@@ -115,8 +89,9 @@ export const Table = ({
         <FilePanel
           filename={filename}
           email={email}
-          spreadsheet={spreadsheet}
+          table={table}
           isUploaded={isUploaded}
+          readSpreadsheet={readSpreadsheet}
         />
       </div>
     </>
