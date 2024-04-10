@@ -17,11 +17,10 @@ RUN \
 
 # Generate prisma
 RUN \
-  if [ -f package-lock.json ]; then npm run db:generate; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm db:generate; \
+  if [ -f package-lock.json ]; then npm run db:push; \
+  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm db:push; \
   else echo "Lockfile not found." && exit 1; \
   fi
-
 
 # Rebuild the source code only when needed
 FROM base AS builder
