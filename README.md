@@ -10,10 +10,6 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) in the browser.
 
-## Production
-
-Is being prepared with Github Actions :)
-
 ## Choice of libraries
 
 - Next.js as the main framework, for its ease of backend + frontend + db integration
